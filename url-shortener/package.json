@@ -1,0 +1,25 @@
+{
+  "name": "url-shortener",
+  "version": "1.0.0",
+  "description": "End points:",
+  "main": "src/server.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "chai": "^3.5.0",
+    "debug": "^2.2.0",
+    "expect": "^1.20.2",
+    "express": "^4.14.0",
+    "nock": "^9.0.2",
+    "rewire": "^2.5.2",
+    "supertest": "^2.0.1",
+    "winston": "^2.3.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Drapchaty",
+  "license": "ISC"
+}
