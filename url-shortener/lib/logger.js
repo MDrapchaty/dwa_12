@@ -1,3 +1,4 @@
+//using winston to log into a file
 var winston = require('winston');
 winston.emitErrs = true;
 
@@ -31,7 +32,7 @@ module.exports.stream = {
     }
 };
 
-
+// by changing this value to false you can turn off the debug results
  if(process.env.DEBUG=true){
     logger.debug("Debug is on");
  }else{
