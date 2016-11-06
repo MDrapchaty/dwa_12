@@ -20,11 +20,15 @@
     "winston": "^2.3.0"
   },
   "devDependencies": {
+<<<<<<< HEAD
     "eslint": "^3.9.1",
     "eslint-config": "^0.3.0",
     "eslint-config-airbnb": "^12.0.0",
     "eslint-plugin-import": "^1.16.0",
     "eslint-plugin-jsx-a11y": "^2.2.3"
+=======
+    "eslint": "^3.9.1"
+>>>>>>> master
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

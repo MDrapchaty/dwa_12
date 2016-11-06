@@ -1,4 +1,10 @@
+<<<<<<< HEAD
 const winston = require('winston');
+=======
+//using winston to log into a file
+var winston = require('winston');
+winston.emitErrs = true;
+>>>>>>> master
 
 winston.emitErrs = true;
 
@@ -30,12 +36,20 @@ module.exports.stream = {
   },
 };
 
+<<<<<<< HEAD
 
 /*  debug loggin can be turned on by uncommenting this conditional
 if (process.env.DEBUG = true) {
   logger.debug('Debug is on');
 } else {
 console.log("debug is off");
+=======
+// by changing this value to false you can turn off the debug results
+ if(process.env.DEBUG=true){
+    logger.debug("Debug is on");
+ }else{
+    console.log("debug is off");
+>>>>>>> master
  }
 */
 // logger.log("info", "File: was found");
