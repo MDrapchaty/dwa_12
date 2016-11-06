@@ -29,7 +29,7 @@ module.exports = function exp(express) {
   .sync({ force: false });
 
 
-  router.post('/v1/:url', function postUrl(req, res) { // post runs this function which is activated on this route /v1/:url
+  router.post('/v1/:url', (req, res) => { // post runs this function which is activated on this route /v1/:url
     const longUrl = req.params.url;
 
     function makeid() { // random 5 digit string generater
@@ -58,47 +58,39 @@ module.exports = function exp(express) {
   });
 
 
-  router.get('/v1/urls', function (req, res) { // Endpoint shows all urls, both original and shortened
+  router.get('/v1/urls', (req, res) => { // Endpoint shows all urls, both original and shortened
     Url.findAll({
       attributes: ['short_url', 'long_url'],
-    }).then(function getUrls(UrlLoc) {
+    }).then((UrlLoc) => {
       res.send(UrlLoc);
     });
   });
 
 
-  router.get('/v1/url/:id', function (req, res) {  // Get a single row's short/original urls based on id entered
+  router.get('/v1/url/:id', (req, res) => {  // Get a single row's short/original urls based on id entered
     Url.findAll({
       where: { id: req.params.id },
       attributes: ['short_url', 'long_url'],
-    }).then(function getUrlId(UrlLoc2) {
+    }).then((UrlLoc2) => {
       res.send(UrlLoc2);
     });
   });
 
 
-	router.delete('/v1/url/:id', function(req, res){ // delete row from urls based on id entered
+  router.delete('/v1/url/:id', (req, res) => { // delete row from urls based on id entered
+    Url.destroy({
+      where: { id: req.params.id },
+    }).then((UrlLoc3) => {
+      res.send(UrlLoc3);
+    });
+  });
 
-			Url.destroy({
-				where: {id: req.params.id}
-			}).then(function (Url) {
-				    res.send(Url);
+  router.post('/v1/url/:id', (req) => { // update short url based on id entered
+    function makeid() { // random 5 digit string generater
+      let text = '';
+      const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
-			}).error(function (err) {
-			    console.log("Error:" + err);
-			});
-
-	});
-
-
-	router.post('/v1/url/:id', function(req, res){ // update short url based on id entered
-
-					function makeid() // random 5 digit string generater
-		{
-		    var text = '';
-		    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
-		    for( var i=0; i < 5; i++ )
+		    for( var i=0; i < 5; i += 1)
 		        text += possible.charAt(Math.floor(Math.random() * possible.length));
 
 		    return text;
@@ -140,6 +132,4 @@ module.exports = function exp(express) {
 
 
 	return router; //return this whole function which is used in your server.js
-
-
-}
+  }
