@@ -2,13 +2,8 @@
 
 module.exports = {
 
-	printName(person) {
-		return person.last + ', ' + person.first;
-	}
+  printName(person) {
+    return person.last + ', ' + person.first;
+  },
 
-
-	
-
-	
 };
-
