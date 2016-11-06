@@ -29,68 +29,52 @@ module.exports = function exp(express) {
   .sync({ force: false });
 
 
-  router.post('/v1/:url', function post(req, res) { // post runs this function which is activated on this route /v1/:url
+  router.post('/v1/:url', function postUrl(req, res) { // post runs this function which is activated on this route /v1/:url
     const longUrl = req.params.url;
 
     function makeid() { // random 5 digit string generater
       let text = '';
       const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
-		    for( var i=0; i < 5; i++ )
-		        text += possible.charAt(Math.floor(Math.random() * possible.length));
+      for (let i = 0; i < 5; i += 1) {
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+      }
 
-		    return text;
-		}
-
-
-		var newUrl = makeid();  //generate new random 5 digit string
-		var shortUrl = newUrl ; //'convert' the string to url
-
-		var url = Url.build({
-		  short_url: shortUrl,
-		  long_url: longUrl
-		})
-
-		url.save().then(function() {
-		  /* ... */
-		})
+      return text;
+    }
 
 
+    const newUrl = makeid();  // generate new random 5 digit string
+    const shortUrl = newUrl;// 'convert' the string to url
 
-		res.json({url: shortUrl }); //respond with json format with new generated random string
-	});
+    const url = Url.build({
+      short_url: shortUrl,
+      long_url: longUrl,
+    });
 
+    url.save();
 
-
-
-	router.get('/v1/urls', function(req, res){   //Endpoint shows all urls, both original and shortened
-
-			Url.findAll({
-	  attributes: ['short_url', 'long_url']
-		}).then(function (Url) {
-				    res.send(Url);
-
-			}).error(function (err) {
-			    console.log("Error:" + err);
-			});
-
-	});
+    res.json({ url: shortUrl }); // respond with json format with new generated random string
+  });
 
 
+  router.get('/v1/urls', function (req, res) { // Endpoint shows all urls, both original and shortened
+    Url.findAll({
+      attributes: ['short_url', 'long_url'],
+    }).then(function getUrls(UrlLoc) {
+      res.send(UrlLoc);
+    });
+  });
 
-	router.get('/v1/url/:id', function(req, res){  // Get a single row's short/original urls based on id entered
 
-			Url.findAll({
-				where: {id: req.params.id},
-	  			attributes: ['short_url', 'long_url']
-			}).then(function (Url) {
-				    res.send(Url);
-
-			}).error(function (err) {
-			    console.log("Error:" + err);
-			});
-
-	});
+  router.get('/v1/url/:id', function (req, res) {  // Get a single row's short/original urls based on id entered
+    Url.findAll({
+      where: { id: req.params.id },
+      attributes: ['short_url', 'long_url'],
+    }).then(function getUrlId(UrlLoc2) {
+      res.send(UrlLoc2);
+    });
+  });
 
 
 	router.delete('/v1/url/:id', function(req, res){ // delete row from urls based on id entered
