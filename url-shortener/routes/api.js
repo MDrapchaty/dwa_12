@@ -1,172 +1,122 @@
-//claim module as function so that you can control what is returned
-module.exports = function(express){
-	var router = express.Router();  //connect to express
+// claim module as function so that you can control what is returned
+module.exports = function exp(express) {
+  const router = express.Router();  // connect to express
 
 
+// CONNECT TO DB
+  const Sequelize = require('sequelize');
 
-//   CONNECT TO DB
-	var Sequelize = require('sequelize')
-  , sequelize = new Sequelize('urldb', 'root', 'root', {
-      dialect: "mysql", // or 'sqlite', 'postgres', 'mariadb'
-      port:    3306, //..3306 or 5432 (for postgres)
-    });
-
-sequelize
-  .authenticate()
-  .then(function(err) {
-    console.log('Connection has been established successfully.');
-  }, function (err) { 
-    console.log('Unable to connect to the database:', err);
+  const sequelize = new Sequelize('urldb', 'root', 'root', {
+    dialect: 'mysql', // or 'sqlite', 'postgres', 'mariadb'
+    port: 3306, //..3306 or 5432 (for postgres)
   });
-
 
 // DEFINING A MODEL
-var Url = sequelize.define('urls', {
-  short_url: Sequelize.STRING,
-  long_url: Sequelize.STRING
-}, {
-  tableName: 'urls'
-});
-
-
-//SYNCHRONIZE SCHEMA
-sequelize
-  .sync({ force: false })
-  .then(function(err) {
-    console.log('It worked!');
-  }, function (err) { 
-    console.log('An error occurred while creating the table:', err);
+  const Url = sequelize.define('urls', {
+    short_url: Sequelize.STRING,
+    long_url: Sequelize.STRING,
+  }, {
+    tableName: 'urls',
   });
 
 
-  router.post('/v1/:url', function(req, res){  //post runs this function which is activated on this route /v1/:url  
-		var longUrl = req.params.url
-		
-				function makeid() // random 5 digit string generater
-		{
-		    var text = '';
-		    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
-		    for( var i=0; i < 5; i++ )
-		        text += possible.charAt(Math.floor(Math.random() * possible.length));
-
-		    return text;
-		}
+  sequelize
+  .authenticate();
 
 
-		var newUrl = makeid();  //generate new random 5 digit string
-		var shortUrl = newUrl ; //'convert' the string to url
-
-		var url = Url.build({
-		  short_url: shortUrl,
-		  long_url: longUrl
-		})
-
-		url.save().then(function() {
-		  /* ... */
-		})
+// SYNCHRONIZE SCHEMA
+  sequelize
+  .sync({ force: false });
 
 
+  router.post('/v1/:url', (req, res) => { // post runs this function which is activated on this route /v1/:url
+    const longUrl = req.params.url;
 
-		res.json({url: shortUrl }); //respond with json format with new generated random string
-	});
+    function makeid() { // random 5 digit string generater
+      let text = '';
+      const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
+      for (let i = 0; i < 5; i += 1) {
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+      }
 
-
-
-	router.get('/v1/urls', function(req, res){   //Endpoint shows all urls, both original and shortened
-		
-			Url.findAll({
-	  attributes: ['short_url', 'long_url']
-		}).then(function (Url) {
-				    res.send(Url);
-
-			}).error(function (err) {
-			    console.log("Error:" + err);
-			});
-
-	});
+      return text;
+    }
 
 
+    const newUrl = makeid();  // generate new random 5 digit string
+    const shortUrl = newUrl;// 'convert' the string to url
 
-	router.get('/v1/url/:id', function(req, res){  // Get a single row's short/original urls based on id entered
-		
-			Url.findAll({
-				where: {id: req.params.id},
-	  			attributes: ['short_url', 'long_url']
-			}).then(function (Url) {
-				    res.send(Url);
+    const url = Url.build({
+      short_url: shortUrl,
+      long_url: longUrl,
+    });
 
-			}).error(function (err) {
-			    console.log("Error:" + err);
-			});
+    url.save();
 
-	});
+    res.json({ url: shortUrl }); // respond with json format with new generated random string
+  });
 
 
-	router.delete('/v1/url/:id', function(req, res){ // delete row from urls based on id entered 
-		
-			Url.destroy({
-				where: {id: req.params.id}
-			}).then(function (Url) {
-				    res.send(Url);
-
-			}).error(function (err) {
-			    console.log("Error:" + err);
-			});
-
-	});
+  router.get('/v1/urls', (req, res) => { // Endpoint shows all urls, both original and shortened
+    Url.findAll({
+      attributes: ['short_url', 'long_url'],
+    }).then((UrlLoc) => {
+      res.send(UrlLoc);
+    });
+  });
 
 
-	router.post('/v1/url/:id', function(req, res){ // update short url based on id entered 
-		
-					function makeid() // random 5 digit string generater
-		{
-		    var text = '';
-		    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
-		    for( var i=0; i < 5; i++ )
-		        text += possible.charAt(Math.floor(Math.random() * possible.length));
-
-		    return text;
-		}
+  router.get('/v1/url/:id', (req, res) => {  // Get a single row's short/original urls based on id entered
+    Url.findAll({
+      where: { id: req.params.id },
+      attributes: ['short_url', 'long_url'],
+    }).then((UrlLoc2) => {
+      res.send(UrlLoc2);
+    });
+  });
 
 
-		var newUrl = makeid();  //generate new random 5 digit string
-		var shortUrl = newUrl ; //'convert' the string to url
+  router.delete('/v1/url/:id', (req, res) => { // delete row from urls based on id entered
+    Url.destroy({
+      where: { id: req.params.id },
+    }).then((UrlLoc3) => {
+      res.send(UrlLoc3);
+    });
+  });
 
-		var values = { short_url: shortUrl};
-		var selector = { where: {id: req.params.id}};
+  router.post('/v1/url/:id', (req) => { // update short url based on id entered
+    function makeid() { // random 5 digit string generater
+      let text = '';
+      const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
-
-			Url.update(values, selector).then(function () {
-				   
-
-			});
-
-	});
-
-
-	router.get('/go/:shortURL', function(req, res){  // Redirect to original url based on short url entered
-			Url.find({
-				where: {short_url: req.params.shortURL},
-	  			attributes: ['long_url']
-			}).then(function (Url) {
-				    res.redirect("http://" + Url.long_url);
-				    
-			}).error(function (err) {
-			    console.log("Error:" + err);
-			});
-	});
-
-	
+      let i = 0;
+      for (i = 0; i < 5; i += 1) {
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+      }
+      return text;
+    }
 
 
+    const newUrl = makeid();  // generate new random 5 digit string
+    const shortUrl = newUrl; // 'convert' the string to url
+
+    const values = { short_url: shortUrl };
+    const selector = { where: { id: req.params.id } };
 
 
+    Url.update(values, selector);
+  });
+
+  router.get('/go/:shortURL', (req, res) => { // Redirect to original url based on short url entered
+    Url.find({
+      where: { short_url: req.params.shortURL },
+      attributes: ['long_url'],
+    }).then(
+      res.redirect('http://' + Url.long_url)
+    );
+  });
 
 
-	return router; //return this whole function which is used in your server.js
-
-
-}
+  return router; // return this whole function which is used in your server.js
+};
