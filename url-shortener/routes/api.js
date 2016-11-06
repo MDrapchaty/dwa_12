@@ -90,27 +90,23 @@ module.exports = function exp(express) {
       let text = '';
       const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
-		    for( var i=0; i < 5; i += 1)
-		        text += possible.charAt(Math.floor(Math.random() * possible.length));
-
-		    return text;
-		}
-
-
-		var newUrl = makeid();  //generate new random 5 digit string
-		var shortUrl = newUrl ; //'convert' the string to url
-
-		var values = { short_url: shortUrl};
-		var selector = { where: {id: req.params.id}};
+      let i = 0;
+      for (i = 0; i < 5; i += 1) {
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+      }
+      return text;
+    }
 
 
-			Url.update(values, selector).then(function () {
+    const newUrl = makeid();  // generate new random 5 digit string
+    const shortUrl = newUrl; // 'convert' the string to url
+
+    const values = { short_url: shortUrl };
+    const selector = { where: { id: req.params.id } };
 
 
-			});
-
-	});
-
+    Url.update(values, selector);
+  });
 
 	router.get('/go/:shortURL', function(req, res){  // Redirect to original url based on short url entered
 			Url.find({
@@ -123,12 +119,6 @@ module.exports = function exp(express) {
 			    console.log("Error:" + err);
 			});
 	});
-
-
-
-
-
-
 
 
 	return router; //return this whole function which is used in your server.js
