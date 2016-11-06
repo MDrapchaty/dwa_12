@@ -108,18 +108,15 @@ module.exports = function exp(express) {
     Url.update(values, selector);
   });
 
-	router.get('/go/:shortURL', function(req, res){  // Redirect to original url based on short url entered
-			Url.find({
-				where: {short_url: req.params.shortURL},
-	  			attributes: ['long_url']
-			}).then(function (Url) {
-				    res.redirect("http://" + Url.long_url);
-
-			}).error(function (err) {
-			    console.log("Error:" + err);
-			});
-	});
+  router.get('/go/:shortURL', (req, res) => { // Redirect to original url based on short url entered
+    Url.find({
+      where: { short_url: req.params.shortURL },
+      attributes: ['long_url'],
+    }).then(
+      res.redirect('http://' + Url.long_url)
+    );
+  });
 
 
-	return router; //return this whole function which is used in your server.js
-  }
+  return router; // return this whole function which is used in your server.js
+};
